@@ -30,8 +30,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
   
-  <!-- html2pdf.js CDN for direct PDF generation -->
+  <!-- html2pdf.js, html2canvas & jsPDF CDNs for crisp, single-page A4 PDF generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="styles.css" />
@@ -354,6 +356,30 @@
                 </svg>
                 <select id="districtSelect" name="district" class="form-select" required>
                   <option value="" disabled selected>Select District</option>
+                  <option value="Ananthapuramu">Ananthapuramu (ATP) — (20/20 spots available)</option>
+                  <option value="Annamayya">Annamayya (ANN) — (20/20 spots available)</option>
+                  <option value="Bapatla">Bapatla (BPT) — (20/20 spots available)</option>
+                  <option value="Chittoor">Chittoor (CTR) — (20/20 spots available)</option>
+                  <option value="Dr. B.R. Ambedkar Konaseema">Dr. B.R. Ambedkar Konaseema (KNS) — (20/20 spots available)</option>
+                  <option value="East Godavari">East Godavari (EGD) — (50/50 spots available)</option>
+                  <option value="Eluru">Eluru (ELR) — (50/50 spots available)</option>
+                  <option value="Guntur">Guntur (GNT) — (20/20 spots available)</option>
+                  <option value="Kakinada">Kakinada (KKD) — (20/20 spots available)</option>
+                  <option value="Krishna">Krishna (KRI) — (50/50 spots available)</option>
+                  <option value="Kurnool">Kurnool (KRN) — (50/50 spots available)</option>
+                  <option value="Nandyal">Nandyal (NDL) — (20/20 spots available)</option>
+                  <option value="Palnadu">Palnadu (PLN) — (20/20 spots available)</option>
+                  <option value="Prakasam">Prakasam (PKM) — (20/20 spots available)</option>
+                  <option value="Sri Potti Sriramulu Nellore">Sri Potti Sriramulu Nellore (NLR) — (20/20 spots available)</option>
+                  <option value="Sri Sathya Sai">Sri Sathya Sai (SSS) — (20/20 spots available)</option>
+                  <option value="Srikakulam">Srikakulam (SKL) — (20/20 spots available)</option>
+                  <option value="Tirupati">Tirupati (TPT) — (20/20 spots available)</option>
+                  <option value="Vijayawada City">Vijayawada City (VJA) [Host District] — (500/500 spots available)</option>
+                  <option value="Visakhapatnam">Visakhapatnam (VSP) — (20/20 spots available)</option>
+                  <option value="Vizianagaram">Vizianagaram (VZM) — (20/20 spots available)</option>
+                  <option value="West Godavari">West Godavari (WGD) — (50/50 spots available)</option>
+                  <option value="YSR Kadapa">YSR Kadapa (YSR) — (20/20 spots available)</option>
+                  <option value="Others">Others (OTH) — (210/210 spots available)</option>
                 </select>
               </div>
               <span class="field-error" id="errorDistrict">Please select a district with available slots.</span>
@@ -847,20 +873,13 @@
         </div>
       </div>
 
-      <!-- Action Buttons -->
+      <!-- Action Buttons (Single Primary Download Slip Button) -->
       <div class="slip-actions-bar">
         <button type="button" class="btn btn-primary" id="btnDownloadSlipPdf">
           <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
-          Download Registration Form (PDF)
-        </button>
-
-        <button type="button" class="btn btn-secondary" id="btnPrintSlip">
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-          </svg>
-          Print Form
+          Download Registration Slip (PDF)
         </button>
 
         <button type="button" class="btn btn-secondary" id="btnRegisterAnother">

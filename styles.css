@@ -1622,6 +1622,7 @@ body:has(#confirmationScreen.active) .main-content,
   letter-spacing: 0.08em;
   color: var(--primary-900);
   font-family: 'Courier New', Courier, monospace;
+  white-space: nowrap;
 }
 
 .slip-status-badge {
@@ -2611,39 +2612,127 @@ body:has(#confirmationScreen.active) .main-content,
     gap: 0.75rem;
   }
 
-  /* Registration Slip on Mobile */
+  /* Registration Slip on Mobile: Compact Header, Centered Photo & Non-Wrapping Reference ID */
+  .slip-header {
+    flex-direction: column !important;
+    text-align: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 1.15rem 1rem !important;
+  }
+
+  .slip-header-brand {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 8px !important;
+  }
+
+  .slip-logo {
+    height: 44px !important;
+    width: auto !important;
+    margin: 0 auto !important;
+  }
+
+  .slip-title {
+    text-align: center !important;
+  }
+
+  .slip-org-name {
+    font-size: 1.05rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.2rem !important;
+    text-align: center !important;
+  }
+
+  .slip-title h2 {
+    font-size: 1.15rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.25rem !important;
+    text-align: center !important;
+  }
+
+  .slip-title p {
+    font-size: 0.7rem !important;
+    line-height: 1.35 !important;
+    text-align: center !important;
+  }
+
+  .slip-document-tag {
+    align-self: center !important;
+    margin: 0 auto !important;
+    font-size: 0.65rem !important;
+    padding: 0.3rem 0.75rem !important;
+  }
+
+  /* Reference ID Banner on Mobile: Never Wrap ID, Stack Badge Cleanly */
+  .slip-id-banner {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 0.65rem !important;
+    padding: 0.85rem 1rem !important;
+  }
+
+  .slip-id-title {
+    font-size: 0.72rem !important;
+    text-align: center !important;
+    margin-bottom: 0.2rem !important;
+  }
+
+  .slip-id-val {
+    white-space: nowrap !important;
+    font-size: clamp(1.1rem, 4.5vw, 1.5rem) !important;
+    letter-spacing: 0.05em !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  .slip-status-badge {
+    margin-top: 0.25rem !important;
+    align-self: center !important;
+    white-space: nowrap !important;
+    font-size: 0.72rem !important;
+    padding: 0.25rem 0.65rem !important;
+  }
+
+  /* Profile & Photo Section on Mobile: Neatly Centered 110px x 135px Photo */
   .slip-profile-section {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 1.25rem;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 1.25rem !important;
   }
 
   .slip-photo-frame {
-    width: 120px;
-    height: 150px;
+    width: 110px !important;
+    height: 135px !important;
+    margin: 0 auto !important;
+    flex-shrink: 0 !important;
+  }
+
+  .slip-photo-frame img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
   }
 
   .slip-grid {
-    grid-template-columns: 1fr;
-    width: 100%;
-    text-align: left;
-  }
-
-  .slip-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    text-align: left !important;
+    gap: 0.75rem !important;
   }
 
   .slip-actions-bar {
-    flex-direction: column;
-    gap: 0.65rem;
+    flex-direction: column !important;
+    gap: 0.65rem !important;
   }
 
   .slip-actions-bar .btn {
-    width: 100%;
-    min-height: 46px;
+    width: 100% !important;
+    min-height: 46px !important;
   }
 
   /* 5. Mobile Footer & Map */
@@ -3056,4 +3145,226 @@ body:has(#confirmationScreen.active) .main-content,
     align-items: center !important;
     border-radius: 0 0 6px 6px !important;
   }
+}
+
+/* ============================================================================
+ * DEDICATED FIXED-WIDTH A4 PRINT/PDF SLIP CONTAINER (750px Wide)
+ * Cloned off-screen top-left container for html2canvas & jsPDF rendering
+ * Guarantees a crisp, clean, 2-column desktop/A4 layout with zero blank pages
+ * ============================================================================
+ */
+.pdf-export-container {
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 750px !important;
+  min-width: 750px !important;
+  max-width: 750px !important;
+  z-index: -9999 !important;
+  background: #ffffff !important;
+  pointer-events: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.pdf-export-container .registration-slip {
+  width: 750px !important;
+  max-width: 750px !important;
+  margin: 0 !important;
+  border-radius: 8px !important;
+  border: 2px solid #d97706 !important;
+  box-shadow: none !important;
+  background: #ffffff !important;
+  display: block !important;
+}
+
+.pdf-export-container .slip-header {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  text-align: left !important;
+  padding: 1.25rem 1.75rem !important;
+  gap: 1.25rem !important;
+}
+
+.pdf-export-container .slip-header-brand {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  text-align: left !important;
+  gap: 1rem !important;
+}
+
+.pdf-export-container .slip-logo {
+  height: 52px !important;
+  width: auto !important;
+  margin: 0 !important;
+  display: block !important;
+}
+
+.pdf-export-container .slip-title {
+  text-align: left !important;
+}
+
+.pdf-export-container .slip-org-name {
+  text-align: left !important;
+  font-size: 1.25rem !important;
+  line-height: 1.1 !important;
+  margin-bottom: 0.2rem !important;
+}
+
+.pdf-export-container .slip-title h2 {
+  font-size: 1.35rem !important;
+  text-align: left !important;
+  line-height: 1.2 !important;
+}
+
+.pdf-export-container .slip-title p {
+  text-align: left !important;
+  font-size: 0.775rem !important;
+}
+
+.pdf-export-container .slip-document-tag {
+  align-self: center !important;
+  margin: 0 !important;
+  font-size: 0.7rem !important;
+  padding: 0.4rem 0.85rem !important;
+}
+
+.pdf-export-container .slip-body {
+  padding: 1.5rem 1.75rem !important;
+  background: #ffffff !important;
+}
+
+.pdf-export-container .slip-id-banner {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  text-align: left !important;
+  padding: 0.85rem 1.25rem !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.pdf-export-container .slip-id-title {
+  text-align: left !important;
+  font-size: 0.75rem !important;
+}
+
+.pdf-export-container .slip-id-val {
+  font-size: 1.6rem !important;
+  white-space: nowrap !important;
+  text-align: left !important;
+}
+
+.pdf-export-container .slip-status-badge {
+  margin: 0 !important;
+  font-size: 0.75rem !important;
+}
+
+.pdf-export-container .slip-profile-section {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+  gap: 1.5rem !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.pdf-export-container .slip-photo-frame {
+  width: 120px !important;
+  height: 150px !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  border: 3px solid #d97706 !important;
+}
+
+.pdf-export-container .slip-photo-frame img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.pdf-export-container .slip-grid {
+  flex: 1 !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 0.75rem 1.25rem !important;
+  text-align: left !important;
+}
+
+.pdf-export-container .slip-cell {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.pdf-export-container .slip-cell.full-width {
+  grid-column: 1 / -1 !important;
+}
+
+.pdf-export-container .slip-cell-label {
+  font-size: 0.685rem !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+  text-transform: uppercase !important;
+  margin-bottom: 0.15rem !important;
+}
+
+.pdf-export-container .slip-cell-val {
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+}
+
+.pdf-export-container .slip-cell-val.highlight {
+  color: #064e3b !important;
+  font-size: 1.05rem !important;
+}
+
+.pdf-export-container .slip-reporting-ribbon {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0.85rem !important;
+  padding: 0.75rem 1.15rem !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.pdf-export-container .slip-reporting-ribbon svg {
+  width: 24px !important;
+  height: 24px !important;
+  color: #92400e !important;
+  flex-shrink: 0 !important;
+}
+
+.pdf-export-container .slip-reporting-text {
+  font-size: 0.85rem !important;
+  color: #064e3b !important;
+  line-height: 1.4 !important;
+}
+
+.pdf-export-container .slip-verification-block {
+  display: block !important;
+  border-top: 1px dashed #d97706 !important;
+  padding-top: 1rem !important;
+}
+
+.pdf-export-container .slip-instructions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0.85rem !important;
+  padding: 0.75rem 1rem !important;
+}
+
+.pdf-export-container .slip-footer {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0.75rem 1.75rem !important;
+  font-size: 0.725rem !important;
+  color: #475569 !important;
 }

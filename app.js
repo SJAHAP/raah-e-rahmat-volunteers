@@ -163,7 +163,6 @@
   var stepperCard = document.getElementById("stepperCard");
   var registrationSlipCard = document.getElementById("registrationSlipCard");
   var btnDownloadSlipPdf = document.getElementById("btnDownloadSlipPdf");
-  var btnPrintSlip = document.getElementById("btnPrintSlip");
   var btnRegisterAnother = document.getElementById("btnRegisterAnother");
 
   // Modals
@@ -184,20 +183,20 @@
   }
 
   /**
-   * Setup initial mock state for 23 AP districts + Others (1,300 Volunteers Total)
+   * Setup initial clean state for 23 AP districts + Others (1,300 Volunteers Total)
+   * Before doGet completes, defaults to full available quotas (e.g. 50/50, 500/500, 210/210, 20/20)
    */
   function initQuotasState() {
-    AP_DISTRICTS.forEach(function (d, index) {
+    AP_DISTRICTS.forEach(function (d) {
       var quotaCap = getDistrictQuota(d.name);
       var host = isHostDistrict(d.name);
-      var sampleRegistered = (index === 9) ? 20 : (host ? 18 : (index % 5));
       liveQuotas[d.name] = {
         code: d.code,
         cap: quotaCap,
         isHost: host,
-        registered: sampleRegistered,
-        available: Math.max(0, quotaCap - sampleRegistered),
-        isFull: sampleRegistered >= quotaCap
+        registered: 0,
+        available: quotaCap,
+        isFull: false
       };
     });
     populateDistrictDropdown();
@@ -206,6 +205,7 @@
 
   /**
    * Fetch live district quotas from Google Apps Script Web App
+   * Cache-busting (?t=${Date.now()}) ensures fresh data without stale local caches
    */
   function fetchLiveQuotas() {
     if (!SCRIPT_URL || SCRIPT_URL === "YOUR_APPS_SCRIPT_EXEC_URL_HERE" || SCRIPT_URL.includes("sample-rah-e-rahmat")) {
@@ -214,7 +214,8 @@
       return;
     }
 
-    var fetchUrl = SCRIPT_URL + (SCRIPT_URL.includes("?") ? "&" : "?") + "action=getDistrictQuotas&_t=" + Date.now();
+    var sep = SCRIPT_URL.includes("?") ? "&" : "?";
+    var fetchUrl = SCRIPT_URL + sep + "t=" + Date.now();
 
     fetch(fetchUrl, {
       method: "GET",
@@ -227,20 +228,26 @@
       .then(function (json) {
         if (json && json.status === "success" && json.districts) {
           for (var distName in json.districts) {
-            if (liveQuotas[distName]) {
-              liveQuotas[distName].cap = json.districts[distName].cap || getDistrictQuota(distName);
-              liveQuotas[distName].registered = json.districts[distName].registered;
-              liveQuotas[distName].available = json.districts[distName].available;
-              liveQuotas[distName].isFull = json.districts[distName].isFull;
-              if (json.districts[distName].isHost !== undefined) {
-                liveQuotas[distName].isHost = json.districts[distName].isHost;
+            var item = json.districts[distName];
+            var targetName = isHostDistrict(distName) ? "Vijayawada City" : distName;
+            if (liveQuotas[targetName]) {
+              liveQuotas[targetName].cap = item.cap || getDistrictQuota(targetName);
+              liveQuotas[targetName].registered = (typeof item.registered === "number") ? item.registered : 0;
+              liveQuotas[targetName].available = (typeof item.available === "number") ? item.available : Math.max(0, liveQuotas[targetName].cap - liveQuotas[targetName].registered);
+              liveQuotas[targetName].isFull = !!item.isFull || (liveQuotas[targetName].available <= 0);
+              if (item.isHost !== undefined) {
+                liveQuotas[targetName].isHost = item.isHost;
+              }
+              if (item.code) {
+                liveQuotas[targetName].code = item.code;
               }
             }
           }
+          // Immediately re-render the dropdown options and modal list
           populateDistrictDropdown();
           renderModalDistrictList();
         } else {
-          throw new Error(json.message || "Invalid response format");
+          throw new Error((json && json.message) || "Invalid response format");
         }
       })
       .catch(function (err) {
@@ -515,16 +522,9 @@
       cb.addEventListener("change", function () { validateField("languagesSpoken"); });
     });
 
-    // Download PDF Action
+    // Download Registration Slip (PDF) Action
     if (btnDownloadSlipPdf) {
       btnDownloadSlipPdf.addEventListener("click", downloadRegistrationSlipPdf);
-    }
-
-    // Print Slip Action
-    if (btnPrintSlip) {
-      btnPrintSlip.addEventListener("click", function () {
-        window.print();
-      });
     }
 
     // Register another volunteer
@@ -1225,41 +1225,139 @@
   }
 
   /**
-   * Download Registration Form (PDF) using html2pdf with window.print fallback
+   * Download Registration Slip (PDF)
+   * Clones #registrationSlipCard into a dedicated fixed-width off-screen container (750px wide),
+   * resets scroll to (0,0) to prevent mobile html2canvas viewport offset bugs,
+   * and renders via html2canvas + jsPDF (or html2pdf).
+   * Scales the image to fit onto 1 single A4 page (190mm x 277mm inside 10mm margins)
+   * ensuring zero blank pages and zero page splitting.
    */
   function downloadRegistrationSlipPdf() {
-    var element = document.getElementById("registrationSlipCard");
-    if (!element) return;
+    var originalSlip = document.getElementById("registrationSlipCard");
+    if (!originalSlip) return;
 
     var vId = currentVolunteerId || "RR-VOLUNTEER";
+    var btn = btnDownloadSlipPdf;
+    var originalText = btn ? btn.innerHTML : "Download Registration Slip (PDF)";
 
-    // Use html2pdf if available
-    if (typeof window.html2pdf === "function") {
+    if (btn) {
+      btn.innerHTML = '<span class="spinner"></span> Generating PDF...';
+      btn.disabled = true;
+    }
+
+    // 1. Clone the slip card
+    var clone = originalSlip.cloneNode(true);
+    clone.id = "registrationSlipCardClone";
+
+    // Ensure the clone's photo image src matches the original photoBase64
+    var origImg = originalSlip.querySelector("#slipPhotoImg");
+    var cloneImg = clone.querySelector("#slipPhotoImg");
+    if (origImg && cloneImg && origImg.src) {
+      cloneImg.src = origImg.src;
+    }
+
+    // Ensure all images inside clone allow cross-origin
+    var imgs = clone.querySelectorAll("img");
+    for (var i = 0; i < imgs.length; i++) {
+      imgs[i].crossOrigin = "anonymous";
+    }
+
+    // 2. Wrap clone in off-screen top-left container (750px wide at 0,0)
+    var container = document.createElement("div");
+    container.className = "pdf-export-container";
+    container.style.position = "fixed";
+    container.style.left = "0";
+    container.style.top = "0";
+    container.style.width = "750px";
+    container.style.zIndex = "-9999";
+    container.style.backgroundColor = "#ffffff";
+    container.appendChild(clone);
+    document.body.appendChild(container);
+
+    // 3. Save scroll position and reset to 0,0 to prevent mobile html2canvas offset bugs
+    var prevScrollX = window.pageXOffset || window.scrollX || 0;
+    var prevScrollY = window.pageYOffset || window.scrollY || 0;
+    window.scrollTo(0, 0);
+
+    // Cleanup helper: restores scroll, removes off-screen container, resets button
+    function cleanup() {
+      if (container && container.parentNode) {
+        container.parentNode.removeChild(container);
+      }
+      window.scrollTo(prevScrollX, prevScrollY);
+      if (btn) {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    function fallbackPrint() {
+      cleanup();
+      window.print();
+    }
+
+    // 4. Render using html2canvas + jsPDF (Direct Single A4 Page)
+    var jsPdfClass = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+    if (typeof window.html2canvas === "function" && jsPdfClass) {
+      window.html2canvas(clone, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        scrollY: 0,
+        scrollX: 0,
+        windowWidth: 794,
+        backgroundColor: "#ffffff"
+      }).then(function (canvas) {
+        try {
+          var imgData = canvas.toDataURL("image/jpeg", 0.98);
+          var pdf = new jsPdfClass("p", "mm", "a4");
+
+          // A4 dimensions: 210mm x 297mm; Margins: 10mm
+          var maxW = 190; // 210 - 20
+          var maxH = 277; // 297 - 20
+
+          var renderW = maxW;
+          var renderH = (canvas.height * renderW) / canvas.width;
+
+          // Scale down proportionally if height exceeds printable height
+          if (renderH > maxH) {
+            renderH = maxH;
+            renderW = (canvas.width * renderH) / canvas.height;
+          }
+
+          var posX = 10 + ((maxW - renderW) / 2); // Horizontally centered
+          var posY = 10; // 10mm margin from top
+
+          pdf.addImage(imgData, "JPEG", posX, posY, renderW, renderH);
+          pdf.save("Rah_e_Rahmat_Registration_Slip_" + vId + ".pdf");
+        } catch (e) {
+          console.error("PDF generation exception:", e);
+          fallbackPrint();
+          return;
+        }
+        cleanup();
+      }).catch(function (err) {
+        console.error("html2canvas error:", err);
+        fallbackPrint();
+      });
+    } else if (typeof window.html2pdf === "function") {
+      // Secondary fallback via html2pdf using clone
       var opt = {
         margin: [10, 10, 10, 10],
         filename: "Rah_e_Rahmat_Registration_Slip_" + vId + ".pdf",
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
+        html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0, windowWidth: 794 },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
       };
 
-      var btn = btnDownloadSlipPdf;
-      var originalText = btn.innerHTML;
-      btn.innerHTML = '<span class="spinner"></span> Generating PDF...';
-      btn.disabled = true;
-
-      window.html2pdf().set(opt).from(element).save().then(function () {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
+      window.html2pdf().set(opt).from(clone).save().then(function () {
+        cleanup();
       }).catch(function (err) {
-        console.warn("html2pdf notice:", err);
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-        window.print();
+        console.warn("html2pdf fallback error:", err);
+        fallbackPrint();
       });
     } else {
-      // Clean fallback: browser print-to-PDF
-      window.print();
+      fallbackPrint();
     }
   }
 
