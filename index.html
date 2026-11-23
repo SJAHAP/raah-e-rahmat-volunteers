@@ -3,8 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Volunteer Registration | 2-Day Rah e Rahmat Conference</title>
-  <meta name="description" content="Official Volunteer Registration Portal for the 2-Day Rah e Rahmat Conference. 1,000 Total Volunteer Force: 500 for NTR Host District, 20 each for all 25 AP Districts." />
+  <title>Volunteer Registration | 2-Day Grand Raah e Rahmat Conference</title>
+  <meta name="description" content="Official Volunteer Registration Portal (Dec 26–27, 2026 • Sitara Grounds, Vijayawada). Join the 1,000-member State Volunteer Force." />
+  
+  <!-- Open Graph / WhatsApp / Facebook Link Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Subai Jamiat Ahle Hadees Andhra Pradesh">
+  <meta property="og:title" content="Volunteer Registration | 2-Day Grand Raah e Rahmat Conference">
+  <meta property="og:description" content="Official Volunteer Registration Portal (Dec 26–27, 2026 • Sitara Grounds, Vijayawada). Join the 1,000-member State Volunteer Force.">
+  <meta property="og:url" content="https://sjahap.github.io/raah-e-rahmat-volunteers/">
+  <meta property="og:image" content="https://sjahap.github.io/raah-e-rahmat-volunteers/og-preview.jpg">
+  <meta property="og:image:secure_url" content="https://sjahap.github.io/raah-e-rahmat-volunteers/og-preview.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Volunteer Registration | 2-Day Grand Raah e Rahmat Conference">
+  <meta name="twitter:description" content="Official Volunteer Registration Portal (Dec 26–27, 2026 • Sitara Grounds, Vijayawada). Join the 1,000-member State Volunteer Force.">
+  <meta name="twitter:image" content="https://sjahap.github.io/raah-e-rahmat-volunteers/og-preview.jpg">
   
   <!-- Google Fonts: Bebas Neue, Plus Jakarta Sans & Playfair Display -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -149,9 +167,9 @@
               <span class="field-error" id="errorFullName">Please enter your full name as per Government ID.</span>
             </div>
 
-            <!-- Applicant Photo Upload (Max 500 KB, JPG/PNG) -->
+            <!-- Applicant Photo Upload (Auto-Compressed for Fast Upload) -->
             <div class="form-group col-span-2" id="groupPhoto">
-              <label class="form-label" for="applicantPhoto">
+              <label class="form-label" id="photoFieldLabel">
                 Applicant Photo (Selfie or Passport-size Photo)<span class="required">*</span>
               </label>
               
@@ -170,17 +188,20 @@
 
                   <!-- Upload Controls -->
                   <div class="photo-controls">
-                    <input type="file" id="applicantPhoto" name="applicantPhoto" class="file-input-hidden" accept="image/*" />
-                    <label for="applicantPhoto" class="custom-file-btn">
+                    <!-- Two Hidden Inputs: Camera & Gallery -->
+                    <input type="file" id="photoInput" name="photoInput" accept="image/*" hidden />
+                    <input type="file" id="cameraInput" name="cameraInput" accept="image/*" capture="user" hidden />
+
+                    <!-- Single Trigger Button: Opens Chooser Popup -->
+                    <button type="button" class="custom-file-btn" id="uploadPhotoBtn">
                       <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                       </svg>
                       <span id="uploadBtnLabel">Upload Passport Photo / Selfie</span>
-                    </label>
+                    </button>
 
                     <p class="photo-specs-text">
-                      Take a camera selfie or choose from photo gallery.<br>
-                      Large photos are automatically compressed for your official slip.
+                      Take a clear selfie or select a photo from gallery (auto-compressed for fast upload).
                     </p>
 
                     <div class="photo-filename-tag" id="photoFilenameTag">
@@ -874,6 +895,51 @@
 
         <div class="district-quota-list" id="modalDistrictList">
           <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       MODAL 2: PHOTO SOURCE CHOOSER (CAMERA VS GALLERY)
+  ================================================================= -->
+  <div class="modal-overlay" id="photoSourceModal" aria-hidden="true">
+    <div class="modal-card photo-source-card">
+      <div class="modal-header photo-modal-header">
+        <h3>Add Applicant Photo</h3>
+        <button type="button" class="modal-close-btn" id="closePhotoModalBtn" aria-label="Close photo chooser">&times;</button>
+      </div>
+      <div class="modal-body photo-source-body">
+        <p class="photo-source-desc">
+          Choose how you would like to provide your applicant photo:
+        </p>
+
+        <div class="photo-source-options">
+          <button type="button" class="photo-source-btn camera-source-btn" id="btnTakeSelfie">
+            <span class="photo-source-icon">📷</span>
+            <div class="photo-source-text">
+              <strong class="photo-source-name">Take Selfie (Camera)</strong>
+              <span class="photo-source-hint">Open front camera directly</span>
+            </div>
+            <svg class="photo-source-arrow" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          <button type="button" class="photo-source-btn gallery-source-btn" id="btnChooseGallery">
+            <span class="photo-source-icon">🖼️</span>
+            <div class="photo-source-text">
+              <strong class="photo-source-name">Choose from Gallery</strong>
+              <span class="photo-source-hint">Select saved photo or files</span>
+            </div>
+            <svg class="photo-source-arrow" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="photo-source-cancel">
+          <button type="button" class="photo-cancel-link" id="cancelPhotoModalBtn">Cancel</button>
         </div>
       </div>
     </div>

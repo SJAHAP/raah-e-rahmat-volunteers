@@ -4,7 +4,7 @@
  * ============================================================================
  * Features:
  *   - Live District Quota Integration (1,000 Volunteers: 500 for NTR Host District, 20 each for 25 AP Districts)
- *   - Applicant Photo Upload: Client-side validation (max 500 KB, JPG/PNG),
+ *   - Applicant Photo Upload: Client-side auto-compression (max 600px canvas, JPEG quality 0.80/0.65),
  *     instant live preview, Base64 conversion for downloadable slip & Drive upload
  *   - 5-Step Guided Registration Wizard with interactive progress tracker
  *   - District President coordination details
@@ -58,8 +58,6 @@
   var HOST_DISTRICT_QUOTA = 500;
   var STANDARD_DISTRICT_QUOTA = 20;
   var TOTAL_STATE_QUOTA = 1000;
-  var MAX_PHOTO_SIZE = 500 * 1024; // 500 KB limit for final compressed photo
-  var MAX_RAW_PHOTO_SIZE = 25 * 1024 * 1024; // 25 MB limit for raw camera photos before compression
   var REPORTING_NOTICE_TEXT = "Friday, 25th December 2026 – Morning";
 
   /**
@@ -108,13 +106,22 @@
   var stepNavPills = document.querySelectorAll(".step-nav-pill");
 
   // Photo Upload Elements
-  var applicantPhotoInput = document.getElementById("applicantPhoto");
+  var photoInput = document.getElementById("photoInput");
+  var cameraInput = document.getElementById("cameraInput");
+  var uploadPhotoBtn = document.getElementById("uploadPhotoBtn");
   var photoPreviewImg = document.getElementById("photoPreviewImg");
   var photoPlaceholder = document.getElementById("photoPlaceholder");
   var photoFilenameTag = document.getElementById("photoFilenameTag");
   var photoFilenameText = document.getElementById("photoFilenameText");
   var removePhotoBtn = document.getElementById("removePhotoBtn");
   var uploadBtnLabel = document.getElementById("uploadBtnLabel");
+
+  // Photo Source Chooser Modal Elements
+  var photoSourceModal = document.getElementById("photoSourceModal");
+  var btnTakeSelfie = document.getElementById("btnTakeSelfie");
+  var btnChooseGallery = document.getElementById("btnChooseGallery");
+  var closePhotoModalBtn = document.getElementById("closePhotoModalBtn");
+  var cancelPhotoModalBtn = document.getElementById("cancelPhotoModalBtn");
 
   // District Elements
   var districtSelect = document.getElementById("districtSelect");
@@ -382,11 +389,65 @@
     // District change
     districtSelect.addEventListener("change", onDistrictChange);
 
-    // Photo file upload & validation
-    applicantPhotoInput.addEventListener("change", handlePhotoSelection);
+    // Photo file upload & chooser popup wiring
+    if (uploadPhotoBtn) {
+      uploadPhotoBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        openPhotoSourceModal();
+      });
+    }
+
+    if (closePhotoModalBtn) {
+      closePhotoModalBtn.addEventListener("click", closePhotoSourceModal);
+    }
+
+    if (cancelPhotoModalBtn) {
+      cancelPhotoModalBtn.addEventListener("click", closePhotoSourceModal);
+    }
+
+    if (photoSourceModal) {
+      photoSourceModal.addEventListener("click", function (e) {
+        if (e.target === photoSourceModal) {
+          closePhotoSourceModal();
+        }
+      });
+    }
+
+    // Option 1: Take Selfie (Camera) -> triggers cameraInput.click() and closes popup
+    if (btnTakeSelfie) {
+      btnTakeSelfie.addEventListener("click", function () {
+        closePhotoSourceModal();
+        if (cameraInput) {
+          cameraInput.value = "";
+          cameraInput.click();
+        }
+      });
+    }
+
+    // Option 2: Choose from Gallery -> triggers photoInput.click() and closes popup
+    if (btnChooseGallery) {
+      btnChooseGallery.addEventListener("click", function () {
+        closePhotoSourceModal();
+        if (photoInput) {
+          photoInput.value = "";
+          photoInput.click();
+        }
+      });
+    }
+
+    // Wire both hidden inputs to the exact same image auto-compression handler
+    if (photoInput) {
+      photoInput.addEventListener("change", handlePhotoSelection);
+    }
+    if (cameraInput) {
+      cameraInput.addEventListener("change", handlePhotoSelection);
+    }
 
     if (removePhotoBtn) {
-      removePhotoBtn.addEventListener("click", resetPhotoUpload);
+      removePhotoBtn.addEventListener("click", function () {
+        resetPhotoUpload();
+        openPhotoSourceModal();
+      });
     }
 
     // Aadhaar auto-formatting (XXXX XXXX XXXX)
@@ -481,13 +542,41 @@
     districtSearchInput.addEventListener("input", function () {
       renderModalDistrictList(this.value);
     });
+
+    // Close any active modal on Escape key
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" || e.keyCode === 27) {
+        if (districtModal && districtModal.classList.contains("active")) {
+          districtModal.classList.remove("active");
+        }
+        if (photoSourceModal && photoSourceModal.classList.contains("active")) {
+          closePhotoSourceModal();
+        }
+      }
+    });
+  }
+
+  function openPhotoSourceModal() {
+    if (photoSourceModal) {
+      photoSourceModal.classList.add("active");
+      photoSourceModal.setAttribute("aria-hidden", "false");
+    }
+  }
+
+  function closePhotoSourceModal() {
+    if (photoSourceModal) {
+      photoSourceModal.classList.remove("active");
+      photoSourceModal.setAttribute("aria-hidden", "true");
+    }
   }
 
   /**
    * Handle Photo Selection, Client-Side Auto-Compression & Base64 Data URL Conversion
-   * - Allows raw camera photos up to 25 MB into compression step without early size rejection
-   * - Resizes proportionally so longest side is at most 600px (maxWidth = 600, maxHeight = 600)
-   * - Exports JPEG at 0.80 quality (or 0.65 if above 450 KB)
+   * - Unified handler for both #photoInput (Gallery) and #cameraInput (Selfie Camera)
+   * - Accepts large raw photos (e.g. 8585 KB camera selfies) without throwing file size errors
+   * - Resizes proportionally via HTML5 <canvas> to max width/height of 600px
+   * - Exports JPEG at 0.80 quality (stepping down to 0.65 only if Base64 > 450 KB)
+   * - Shows compressed size in preview box (e.g. "Ready (145 KB)")
    * - Always calls URL.revokeObjectURL to keep mobile browser memory clean
    */
   function handlePhotoSelection(e) {
@@ -496,21 +585,10 @@
 
     var errorEl = document.getElementById("errorPhoto");
 
-    // 1. Basic image validation (accepts any image type, e.g. from camera or gallery)
-    var isImage = (file.type && file.type.toLowerCase().startsWith("image/")) || 
-                  /\.(jpe?g|png|webp|heic|heif|bmp|gif)$/i.test(file.name || "");
-    if (!isImage) {
+    // 1. Accept any standard or mobile camera image format (JPEG, PNG, WebP, HEIC, etc.)
+    if (!file.type || !file.type.startsWith("image/")) {
       toggleFieldError("groupPhoto", "errorPhoto", true);
       errorEl.textContent = "Please select a valid image file or take a camera selfie.";
-      resetPhotoUpload();
-      return;
-    }
-
-    // 2. Allow raw camera photos up to 25 MB to enter the compression step
-    if (file.size > MAX_RAW_PHOTO_SIZE) {
-      toggleFieldError("groupPhoto", "errorPhoto", true);
-      var rawMb = Math.round(file.size / (1024 * 1024));
-      errorEl.textContent = "Raw photo is too large (" + rawMb + " MB). Maximum allowed size before compression is 25 MB.";
       resetPhotoUpload();
       return;
     }
@@ -519,7 +597,7 @@
     toggleFieldError("groupPhoto", "errorPhoto", false);
     uploadBtnLabel.textContent = "Compressing Photo...";
 
-    // 3. Load into Image object via URL.createObjectURL
+    // 2. Load into Image object via URL.createObjectURL
     var objectUrl = URL.createObjectURL(file);
     var img = new Image();
 
@@ -570,24 +648,16 @@
           approxBytes = Math.round(base64Length * 0.75);
         }
 
-        // Validate final compressed size (must be under 500 KB limit)
-        if (approxBytes > MAX_PHOTO_SIZE) {
-          toggleFieldError("groupPhoto", "errorPhoto", true);
-          errorEl.textContent = "Compressed photo is slightly above 500 KB. Please choose a clearer selfie.";
-          resetPhotoUpload();
-          return;
-        }
-
-        // Store compressed Base64 string for preview and submission
+        // Store compressed Base64 JPEG string in state variable for preview & submission
         photoBase64 = compressedBase64;
 
-        // Update UI Preview
+        // Update UI Preview with compressed image and size (e.g. "Ready (145 KB)")
         photoPreviewImg.src = photoBase64;
         photoPreviewImg.style.display = "block";
         photoPlaceholder.style.display = "none";
 
         var compressedKb = Math.round(approxBytes / 1024);
-        photoFilenameText.textContent = (file.name || "photo.jpg") + " (" + compressedKb + " KB)";
+        photoFilenameText.textContent = "Ready (" + compressedKb + " KB)";
         photoFilenameTag.style.display = "inline-flex";
         uploadBtnLabel.textContent = "Change Photo";
 
@@ -614,7 +684,8 @@
   }
 
   function resetPhotoUpload() {
-    applicantPhotoInput.value = "";
+    if (photoInput) photoInput.value = "";
+    if (cameraInput) cameraInput.value = "";
     photoBase64 = "";
     photoPreviewImg.src = "";
     photoPreviewImg.style.display = "none";
