@@ -2064,26 +2064,10 @@ body:has(#confirmationScreen.active) .main-content,
   text-decoration: underline;
 }
 
-/* Responsive Overrides for Mobile & Tablet */
-@media (max-width: 768px) {
-  .footer-grid {
-    grid-template-columns: 1fr;
-    text-align: center;
-    gap: 1.5rem;
-  }
-
-  .footer-col-left,
-  .footer-col-center,
-  .footer-col-right {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .footer-map-card {
-    max-width: 100%;
-    width: 240px;
-    height: 135px;
-  }
+.copyright-sep {
+  display: inline;
+  margin: 0 0.35rem;
+  color: var(--slate-400);
 }
 
 /* ============================================================================
@@ -2161,55 +2145,424 @@ body:has(#confirmationScreen.active) .main-content,
   }
 }
 
-/* Mobile Overrides */
-@media (max-width: 640px) {
+/* ============================================================================
+ * RESPONSIVE MOBILE & TABLET OVERRIDES (@media (max-width: 768px))
+ * ============================================================================
+ */
+@media (max-width: 768px) {
+  /* 1. Mobile Navbar */
+  .header-container {
+    padding: 0.6rem 0.85rem;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand-section {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .navbar-logo {
+    height: 38px;
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .brand-text {
+    flex: 1;
+    min-width: 0;
+  }
+
   .brand-text h1 {
-    font-size: 1.35rem;
+    font-size: 0.78rem;
+    line-height: 1.25;
     white-space: normal;
-    line-height: 1.15;
+    word-break: normal;
+    text-transform: uppercase;
+    margin: 0;
   }
-  .conf-prefix {
-    font-size: 1rem;
-    letter-spacing: 3px;
+
+  .brand-text p {
+    font-size: 0.62rem;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .conf-main-title {
-    font-size: 2.15rem;
+
+  .header-actions {
+    flex-shrink: 0;
+    margin-left: auto;
   }
-  .hero-brigade-title {
-    font-size: 1.15rem;
+
+  .pill-btn,
+  #openDistrictModalBtn {
+    padding: 0.4rem 0.65rem;
+    font-size: 0.72rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    gap: 0.35rem;
   }
+
+  /* 2. Hero Section & Top Date Pill */
+  .hero-wrapper {
+    padding: 1.5rem 1rem 2.25rem;
+  }
+
   .event-tag {
-    font-size: 0.775rem;
-    padding: 0.4rem 0.9rem;
+    border-radius: 12px;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+    display: inline-block;
+    margin-bottom: 1rem;
   }
-  .step-pane {
-    padding: 1.5rem 1.25rem;
+
+  .conf-prefix {
+    font-size: 1.1rem;
+    letter-spacing: 2.5px;
+    margin-bottom: 0.15rem;
   }
-  .card-footer {
-    padding: 1rem 1.25rem;
-    flex-direction: column-reverse;
+
+  .conf-main-title {
+    font-size: 1.85rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
   }
-  .card-footer .btn {
+
+  .hero-brigade-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    padding: 0 0.25rem;
+  }
+
+  .hero-stats-bar {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding-top: 0.25rem;
+  }
+
+  .stat-item {
+    width: 100%;
+    max-width: 340px;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 0.45rem 0.75rem;
+  }
+
+  /* 3. Step Tracker Card & Compact Mobile Step Dots */
+  .main-content {
+    margin: -1.75rem auto 2.5rem;
+    padding: 0 0.75rem;
+  }
+
+  .stepper-card {
+    padding: 1rem 1rem;
+    margin-bottom: 1.25rem;
+    border-radius: var(--radius-md);
+  }
+
+  .stepper-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "badge percent"
+      "title title";
+    row-gap: 0.35rem;
+    align-items: center;
+    margin-bottom: 0.65rem;
+  }
+
+  .stepper-step-indicator {
+    display: contents;
+  }
+
+  .stepper-step-badge {
+    grid-area: badge;
+    justify-self: start;
+    font-size: 0.725rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .stepper-progress-percentage {
+    grid-area: percent;
+    justify-self: end;
+    font-size: 0.75rem;
+  }
+
+  #stepTitleDisplay {
+    grid-area: title;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--primary-900);
+    margin-top: 0.15rem;
+    display: block;
+  }
+
+  .step-nav-pills {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+    margin-top: 0.75rem;
+    padding: 0;
+    overflow: visible;
     width: 100%;
   }
-  .step-nav-pills {
-    display: none;
+
+  .step-nav-pill {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
   }
+
+  .step-nav-pill span:not(.step-num-icon) {
+    display: none !important;
+  }
+
+  .step-nav-pill .step-num-icon {
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  /* 4. Form Card, Photo Upload Box & Touch Inputs */
+  .form-card {
+    border-radius: var(--radius-lg);
+  }
+
+  .step-pane {
+    padding: 1.25rem 1rem;
+  }
+
+  .section-header {
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.85rem;
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+  }
+
+  .section-desc {
+    font-size: 0.825rem;
+    line-height: 1.45;
+  }
+
+  .form-grid.two-cols {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+
+  /* Photo Upload Box: Stack preview, upload button & specs vertically */
+  .photo-upload-layout {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.65rem;
+  }
+
+  .photo-preview-box {
+    width: 84px;
+    height: 84px;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+  }
+
+  .photo-controls {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .custom-file-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .photo-specs-text {
+    text-align: center;
+    margin-top: 0.35rem;
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .photo-filename-tag {
+    justify-content: center;
+  }
+
+  /* 16px Font Size on Form Controls to Prevent Safari Auto-Zoom */
+  input,
+  select,
+  textarea,
+  .form-input,
+  .form-select,
+  .form-textarea {
+    font-size: 16px !important;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .input-with-icon .form-input,
+  .input-with-icon .form-select {
+    padding-left: 2.5rem;
+  }
+
+  /* Navigation Buttons: 46px Min Height Tap Targets */
+  .card-footer {
+    padding: 1rem 1rem;
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+  }
+
+  .card-footer .btn {
+    width: 100%;
+    min-height: 46px;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Mandatory Notice & District Card */
+  .mandatory-reporting-box {
+    padding: 1rem 1.15rem;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .district-status-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  /* Registration Slip on Mobile */
   .slip-profile-section {
     flex-direction: column;
     align-items: center;
+    text-align: center;
+    gap: 1.25rem;
   }
+
   .slip-photo-frame {
     width: 120px;
     height: 150px;
   }
+
   .slip-grid {
     grid-template-columns: 1fr;
     width: 100%;
+    text-align: left;
   }
+
   .slip-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
+  }
+
+  .slip-actions-bar {
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .slip-actions-bar .btn {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  /* 5. Mobile Footer & Map */
+  .footer-wrapper {
+    padding: 2rem 1rem 1.25rem;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 1.25rem;
+  }
+
+  .footer-col-left,
+  .footer-col-center,
+  .footer-col-right {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .footer-logo {
+    height: 76px;
+    width: auto;
+    margin: 0 auto;
+  }
+
+  .footer-calligraphy {
+    max-width: 280px;
+    width: auto;
+    max-height: 52px;
+    margin: 0 auto 0.4rem auto;
+  }
+
+  .footer-org-name {
+    font-size: 1.25rem;
+  }
+
+  .footer-event-title {
+    font-size: 0.95rem;
+  }
+
+  .footer-map-card {
+    width: 100%;
+    max-width: 320px;
+    height: 160px;
+    margin: 0 auto;
+  }
+
+  .footer-map-card iframe {
+    width: 100%;
+    height: 160px;
+  }
+
+  /* Bottom Copyright Notice Mobile Formatting */
+  .footer-bottom-row {
+    margin-top: 1.25rem;
+    padding-top: 0.85rem;
+  }
+
+  .copyright-sep {
+    display: none;
+  }
+
+  .designer-link {
+    display: block;
+    margin-top: 0.35rem;
   }
 }
