@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Volunteer Registration | 2-Day Rah e Rahmat Conference</title>
+  <meta name="description" content="Official Volunteer Registration Portal for the 2-Day Rah e Rahmat Conference. 1,000 Total Volunteer Force: 500 for NTR Host District, 20 each for all 25 AP Districts." />
+  
+  <!-- Google Fonts: Bebas Neue, Plus Jakarta Sans & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+  
+  <!-- html2pdf.js CDN for direct PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="header-wrapper">
+    <div class="header-container">
+      <a href="#" class="brand-section">
+        <img src="logo.png" alt="Subai Jamait Ahle Hadees Andhra Pradesh Logo" class="navbar-logo" />
+        <div class="brand-text">
+          <h1>Subai Jamait Ahle Hadees Andhra Pradesh</h1>
+          <p>Official Volunteer Registration Portal</p>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <!-- Live District Quotas Button -->
+        <button type="button" class="pill-btn" id="openDistrictModalBtn" title="View live quota spots across all 26 AP districts">
+          <span class="pulse-dot"></span>
+          <span>District Quotas</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Header -->
+  <section class="hero-wrapper">
+    <div class="hero-content">
+      <div class="event-tag">
+        "Cooperate with one another in goodness and righteousness.." (Quran-5:2)
+      </div>
+      <div class="conference-title-stack">
+        <span class="conf-prefix">Grand</span>
+        <h2 class="conf-main-title">Raah e Rahmat Conference</h2>
+      </div>
+      <h3 class="hero-brigade-title">Join the Conference Volunteer Brigade</h3>
+      <p class="hero-subtitle">
+        Be an integral part of the 2-Day Rah e Rahmat Conference (26th and 27th of December - 2026). Register your service for guest hospitality, crowd coordination, logistics, and event operations.
+      </p>
+
+      <div class="hero-stats-bar">
+        <div class="stat-item">
+          <span>Official AP Districts:</span>
+          <strong>26</strong>
+        </div>
+        <div class="stat-item">
+          <span>Quota:</span>
+          <strong>500 (NTR) &bull; 20 (Other Districts)</strong>
+        </div>
+        <div class="stat-item">
+          <span>Total State Force:</span>
+          <strong>1,000 Volunteers</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Application Body -->
+  <main class="main-content">
+
+    <!-- Stepper Card (5 Steps) -->
+    <div class="stepper-card" id="stepperCard">
+      <div class="stepper-header">
+        <div class="stepper-step-indicator">
+          <span class="stepper-step-badge" id="stepCounterBadge">Step 1 of 5</span>
+          <span id="stepTitleDisplay">Personal & Contact</span>
+        </div>
+        <div class="stepper-progress-percentage" id="progressPercentage">0% Completed</div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-bar" id="stepperProgressBar" style="width: 0%;"></div>
+      </div>
+
+      <!-- Step Navigation Pills (Desktop Quick Jump) -->
+      <nav class="step-nav-pills" aria-label="Registration Steps">
+        <button type="button" class="step-nav-pill active" data-step="1">
+          <span class="step-num-icon">1</span>
+          <span>Personal & Photo</span>
+        </button>
+        <button type="button" class="step-nav-pill" data-step="2">
+          <span class="step-num-icon">2</span>
+          <span>District & Local</span>
+        </button>
+        <button type="button" class="step-nav-pill" data-step="3">
+          <span class="step-num-icon">3</span>
+          <span>Verification</span>
+        </button>
+        <button type="button" class="step-nav-pill" data-step="4">
+          <span class="step-num-icon">4</span>
+          <span>Availability</span>
+        </button>
+        <button type="button" class="step-nav-pill" data-step="5">
+          <span class="step-num-icon">5</span>
+          <span>Reporting & Pledge</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Multi-Step Registration Form Card -->
+    <div class="form-card" id="formCard">
+      <form id="volunteerForm" novalidate>
+
+        <!-- ================================================================
+             SECTION 1: Personal & Contact Details (with Photo Upload)
+        ================================================================= -->
+        <div class="step-pane active" id="stepPane1" data-step="1">
+          <div class="section-header">
+            <div class="section-pretitle">Section 1 of 5</div>
+            <h3 class="section-title">
+              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              Personal & Contact Details
+            </h3>
+            <p class="section-desc">Provide your legal identification details and upload a passport-size photo or clear selfie.</p>
+          </div>
+
+          <div class="form-grid two-cols">
+
+            <!-- Full Name -->
+            <div class="form-group col-span-2" id="groupFullName">
+              <label class="form-label" for="fullName">
+                Full Name (as per Government ID)<span class="required">*</span>
+              </label>
+              <div class="input-container input-with-icon">
+                <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <input type="text" id="fullName" name="fullName" class="form-input" placeholder="e.g. Shaik Abdul Rahim" required />
+              </div>
+              <span class="field-error" id="errorFullName">Please enter your full name as per Government ID.</span>
+            </div>
+
+            <!-- Applicant Photo Upload (Max 500 KB, JPG/PNG) -->
+            <div class="form-group col-span-2" id="groupPhoto">
+              <label class="form-label" for="applicantPhoto">
+                Applicant Photo (Selfie or Passport-size Photo)<span class="required">*</span>
+              </label>
+              
+              <div class="photo-upload-wrapper" id="photoUploadZone">
+                <div class="photo-upload-layout">
+                  <!-- Live Preview Box -->
+                  <div class="photo-preview-box" id="photoPreviewContainer">
+                    <img id="photoPreviewImg" alt="Applicant Photo Preview" />
+                    <div class="photo-placeholder-icon" id="photoPlaceholder">
+                      <svg fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                      </svg>
+                      <span>No Photo</span>
+                    </div>
+                  </div>
+
+                  <!-- Upload Controls -->
+                  <div class="photo-controls">
+                    <input type="file" id="applicantPhoto" name="applicantPhoto" class="file-input-hidden" accept="image/jpeg, image/png" />
+                    <label for="applicantPhoto" class="custom-file-btn">
+                      <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                      </svg>
+                      <span id="uploadBtnLabel">Upload Passport Photo / Selfie</span>
+                    </label>
+
+                    <p class="photo-specs-text">
+                      Strictly <strong>JPG or PNG</strong> only. Maximum size: <strong>500 KB</strong>.<br>
+                      Must be a clear front-facing photo for your official volunteer registration slip.
+                    </p>
+
+                    <div class="photo-filename-tag" id="photoFilenameTag">
+                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span id="photoFilenameText">photo.jpg</span>
+                      <span class="remove-photo-link" id="removePhotoBtn">(Change)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <span class="field-error" id="errorPhoto">Please upload a clear JPG/PNG photo under 500 KB.</span>
+            </div>
+
+            <!-- Gender -->
+            <div class="form-group" id="groupGender">
+              <label class="form-label">
+                Gender<span class="required">*</span>
+              </label>
+              <div class="radio-pill-group">
+                <div class="radio-card">
+                  <input type="radio" id="genderMale" name="gender" value="Male" required />
+                  <label for="genderMale" class="radio-card-label">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M9 9c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V16h14v-1.5c0-2.33-4.67-3.5-7-3.5zm11.5-6h-2.58l3.08-3.08-1.41-1.41-3.08 3.08V1.5h-2v6h6v-2z"/></svg>
+                    Male
+                  </label>
+                </div>
+                <div class="radio-card">
+                  <input type="radio" id="genderFemale" name="gender" value="Female" />
+                  <label for="genderFemale" class="radio-card-label">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a5 5 0 00-5 5c0 2.38 1.66 4.38 3.88 4.88v2.12H9v2h1.88v3h2.24v-3H15v-2h-1.88v-2.12C15.34 11.38 17 9.38 17 7a5 5 0 00-5-5zm0 8a3 3 0 110-6 3 3 0 010 6z"/></svg>
+                    Female
+                  </label>
+                </div>
+              </div>
+              <span class="field-error" id="errorGender">Please select your gender.</span>
+            </div>
+
+            <!-- Age -->
+            <div class="form-group" id="groupAge">
+              <label class="form-label" for="age">
+                Age (18 - 65)<span class="required">*</span>
+              </label>
+              <div class="input-container input-with-icon">
+                <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <input type="number" id="age" name="age" class="form-input" min="18" max="65" placeholder="e.g. 24" required />
+              </div>
+              <span class="field-hint">Must be between 18 and 65 years.</span>
+              <span class="field-error" id="errorAge">Age must be between 18 and 65.</span>
+            </div>
+
+            <!-- WhatsApp Mobile Number -->
+            <div class="form-group" id="groupWhatsapp">
+              <label class="form-label" for="whatsapp">
+                Mobile Number (WhatsApp-enabled)<span class="required">*</span>
+              </label>
+              <div class="input-container input-with-prefix">
+                <span class="input-prefix">+91</span>
+                <input type="tel" id="whatsapp" name="whatsapp" class="form-input" maxlength="10" placeholder="9876543210" required />
+              </div>
+              <span class="field-hint">Primary channel for briefing groups & pass verification.</span>
+              <span class="field-error" id="errorWhatsapp">Enter a valid 10-digit Indian number (starts with 6, 7, 8, or 9).</span>
+            </div>
+
+            <!-- Alternate / Emergency Contact & Relationship -->
+            <div class="form-group" id="groupEmergency">
+              <label class="form-label" for="emergencyContact">
+                Alternate / Emergency Contact Number<span class="required">*</span>
+              </label>
+              <div class="input-container input-with-prefix">
+                <span class="input-prefix">+91</span>
+                <input type="tel" id="emergencyContact" name="emergencyContact" class="form-input" maxlength="10" placeholder="9123456789" required />
+              </div>
+              <span class="field-hint">Must be different from your WhatsApp number.</span>
+              <span class="field-error" id="errorEmergency">Enter a valid 10-digit number distinct from WhatsApp.</span>
+            </div>
+
+            <!-- Emergency Relationship -->
+            <div class="form-group" id="groupRelationship">
+              <label class="form-label" for="relationship">
+                Emergency Contact Relationship<span class="required">*</span>
+              </label>
+              <div class="input-container input-with-icon">
+                <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <select id="relationship" name="relationship" class="form-select" required>
+                  <option value="" disabled selected>Select relationship...</option>
+                  <option value="Father">Father</option>
+                  <option value="Mother">Mother</option>
+                  <option value="Brother">Brother</option>
+                  <option value="Sister">Sister</option>
+                  <option value="Spouse">Spouse</option>
+                  <option value="Guardian">Guardian</option>
+                  <option value="Relative">Relative</option>
+                  <option value="Friend">Friend</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <span class="field-error" id="errorRelationship">Please select relationship to emergency contact.</span>
+            </div>
+
+            <!-- Email Address (Optional) -->
+            <div class="form-group" id="groupEmail">
+              <label class="form-label" for="email">
+                Email Address <span class="optional">(Optional)</span>
+              </label>
+              <div class="input-container input-with-icon">
+                <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <input type="email" id="email" name="email" class="form-input" placeholder="volunteer@example.com" />
+              </div>
+              <span class="field-error" id="errorEmail">Please enter a valid email address.</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ================================================================
+             SECTION 2: District & Local Coordination (Updated: 25 per district)
+        ================================================================= -->
+        <div class="step-pane" id="stepPane2" data-step="2">
+          <div class="section-header">
+            <div class="section-pretitle">Section 2 of 5</div>
+            <h3 class="section-title">
+              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              District & Local Coordination
+            </h3>
+            <p class="section-desc">Host district NTR is allotted 500 volunteers, and each of the other 25 districts is allotted 20 volunteers (1,000 total). Specify your local coordination details.</p>
+          </div>
+
+          <div class="form-grid two-cols">
+
+            <!-- District Selection (1,000 Total Force: 500 NTR, 20 Others) -->
+            <div class="form-group col-span-2" id="groupDistrict">
+              <label class="form-label" for="districtSelect">
+                Andhra Pradesh District (Alphabetical Order)<span class="required">*</span>
+              </label>
+              <div class="input-container input-with-icon">
+                <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" />
+                </svg>
+                <select id="districtSelect" name="district" class="form-select" required>
+                  <option value="" disabled selected>Select District</option>
+                </select>
+              </div>
+              <span class="field-error" id="errorDistrict">Please select a district with available slots.</span>
+
+              <!-- Live District Selected Status Card -->
+              <div class="district-status-card" id="districtStatusCard" style="display: none;">
+                <div class="district-info-main">
+                  <span class="district-code-badge" id="selectedDistCode">KRI</span>
+                  <div class="district-info-text">
+                    <h4 id="selectedDistName">Krishna</h4>
+                    <p id="selectedDistQuotaText">Spots available</p>
+                  </div>
+                </div>
+                <div class="quota-indicator-pill available" id="selectedDistBadge">
+                  Available
+                </div>
+              </div>
+
+              <!-- Full Quota Alert -->
+              <div class="alert-box danger" id="districtFullAlert" style="display: none;">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+                <div>
+                  <strong>District Quota Full:</strong> This district has reached its maximum quota of volunteers. Registration for this district is closed. Please select another district if applicable or contact the central office.
+                </div>
+              </div>
+            </div>
+
+            <!-- Mandal / Town / City -->
+            <div class="form-group" id="groupMandal">
+              <label class="form-label" for="mandal">
+                Mandal / Town / City<span class="required">*</span>
+              </label>
+              <div class="input-container input-with-icon">
+                <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <input type="text" id="mandal" name="mandal" class="form-input" placeholder="e.g. Vijayawada Urban" required />
+              </div>
+              <span class="field-error" id="errorMandal">Please enter your Mandal, Town, or City.</span>
+            </div>
+
+            <!-- District President Name (Renamed) -->
+            <div class="form-group" id="groupCoordinator">
+              <label class="form-label" for="coordinator">
+                District President Name<span class="required">*</span>
+              </label>
+              <div class="input-container input-with-icon">
+                <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <input type="text" id="coordinator" name="coordinator" class="form-input" placeholder="e.g. Janab Mohammed Ibrahim" required />
+              </div>
+              <span class="field-hint">Name of your respective District President / Reference.</span>
+              <span class="field-error" id="errorCoordinator">Please enter the District President Name.</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ================================================================
+             SECTION 3: Identification & Verification (Aadhaar Number)
+        ================================================================= -->
+        <div class="step-pane" id="stepPane3" data-step="3">
+          <div class="section-header">
+            <div class="section-pretitle">Section 3 of 5</div>
+            <h3 class="section-title">
+              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              Identification & Verification
+            </h3>
+            <p class="section-desc">Government identity verification is mandatory for issuing conference security access credentials.</p>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group" id="groupAadhaar">
+              <label class="form-label" for="aadhaar">
+                Aadhaar Card Number (12 Digits)<span class="required">*</span>
+              </label>
+              <div class="input-container input-with-icon">
+                <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                </svg>
+                <input type="text" id="aadhaar" name="aadhaar" class="form-input" maxlength="14" placeholder="XXXX XXXX XXXX" inputmode="numeric" required />
+              </div>
+              <span class="field-hint">Auto-formatted as 4-4-4 digits. Only 12 digits accepted.</span>
+              <span class="field-error" id="errorAadhaar">Enter a valid 12-digit Aadhaar number.</span>
+
+              <div class="alert-box info">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+                <div>
+                  <strong>Data Privacy & Security Guarantee:</strong> Aadhaar numbers are collected strictly for verifying volunteer identity, generating unique security badges, and police protocol requirements. It will never be publicized or shared.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================================================================
+             SECTION 4: Availability & Languages
+        ================================================================= -->
+        <div class="step-pane" id="stepPane4" data-step="4">
+          <div class="section-header">
+            <div class="section-pretitle">Section 4 of 5</div>
+            <h3 class="section-title">
+              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Availability & Languages
+            </h3>
+            <p class="section-desc">Indicate your event attendance schedule, preferred shifts, and spoken languages.</p>
+          </div>
+
+          <div class="form-grid two-cols">
+
+            <!-- Attendance Availability (Single pre-selected full-width option) -->
+            <div class="form-group col-span-2" id="groupAvailability">
+              <label class="form-label" for="availBoth">
+                Attendance Availability<span class="required">*</span>
+              </label>
+              <div class="single-choice-card">
+                <input type="radio" id="availBoth" name="availability" value="Both Days (Day 1 & Day 2)" checked required />
+                <label for="availBoth" class="single-choice-label">
+                  <div class="single-choice-main">
+                    <span class="single-choice-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </span>
+                    <div class="single-choice-info">
+                      <span class="single-choice-title">Both Days (Day 1 & Day 2)</span>
+                      <span class="single-choice-sub">Full conference attendance across all plenary and breakout sessions</span>
+                    </div>
+                  </div>
+                  <span class="single-choice-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    Pre-selected
+                  </span>
+                </label>
+              </div>
+              <span class="field-error" id="errorAvailability">Attendance availability is required.</span>
+            </div>
+
+            <!-- Preferred Shift / Time Slot (Single pre-selected full-width option) -->
+            <div class="form-group col-span-2" id="groupShift">
+              <label class="form-label" for="shiftFull">
+                Preferred Shift / Time Slot<span class="required">*</span>
+              </label>
+              <div class="single-choice-card">
+                <input type="checkbox" id="shiftFull" name="preferredShift" value="Full Time" checked required />
+                <label for="shiftFull" class="single-choice-label">
+                  <div class="single-choice-main">
+                    <span class="single-choice-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </span>
+                    <div class="single-choice-info">
+                      <span class="single-choice-title">Full Time</span>
+                      <span class="single-choice-sub">Dedicated service throughout morning, afternoon, and evening proceedings</span>
+                    </div>
+                  </div>
+                  <span class="single-choice-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    Pre-selected
+                  </span>
+                </label>
+              </div>
+              <span class="field-error" id="errorShift">Preferred shift is required.</span>
+            </div>
+
+            <!-- Languages Spoken (Checkboxes) -->
+            <div class="form-group col-span-2" id="groupLanguages">
+              <label class="form-label">
+                Languages Spoken (Select all applicable)<span class="required">*</span>
+              </label>
+              <div class="checkbox-grid two-cols">
+                <div class="check-card">
+                  <input type="checkbox" id="langTelugu" name="languagesSpoken" value="Telugu" checked />
+                  <label for="langTelugu" class="check-card-label">
+                    <span class="check-box-square">
+                      <svg viewBox="0 0 24 24"><path fill="none" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    </span>
+                    <span>Telugu (తెలుగు)</span>
+                  </label>
+                </div>
+
+                <div class="check-card">
+                  <input type="checkbox" id="langUrdu" name="languagesSpoken" value="Urdu" checked />
+                  <label for="langUrdu" class="check-card-label">
+                    <span class="check-box-square">
+                      <svg viewBox="0 0 24 24"><path fill="none" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    </span>
+                    <span>Urdu (اردو)</span>
+                  </label>
+                </div>
+
+                <div class="check-card">
+                  <input type="checkbox" id="langEnglish" name="languagesSpoken" value="English" />
+                  <label for="langEnglish" class="check-card-label">
+                    <span class="check-box-square">
+                      <svg viewBox="0 0 24 24"><path fill="none" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    </span>
+                    <span>English</span>
+                  </label>
+                </div>
+
+                <div class="check-card">
+                  <input type="checkbox" id="langHindi" name="languagesSpoken" value="Hindi" />
+                  <label for="langHindi" class="check-card-label">
+                    <span class="check-box-square">
+                      <svg viewBox="0 0 24 24"><path fill="none" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    </span>
+                    <span>Hindi (हिन्दी)</span>
+                  </label>
+                </div>
+              </div>
+              <span class="field-error" id="errorLanguages">Please select at least one language.</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ================================================================
+             SECTION 5: Operational Note & Final Declaration
+        ================================================================= -->
+        <div class="step-pane" id="stepPane5" data-step="5">
+          <div class="section-header">
+            <div class="section-pretitle">Section 5 of 5</div>
+            <h3 class="section-title">
+              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+              Operational Note & Final Declaration
+            </h3>
+            <p class="section-desc">Review your registration details, acknowledge the mandatory reporting date, and submit.</p>
+          </div>
+
+          <!-- Highlighted Mandatory Reporting Notice Box -->
+          <div class="mandatory-reporting-box">
+            <div class="reporting-badge-icon">
+              <svg fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div class="reporting-notice-content">
+              <h4>Important Reporting Notice</h4>
+              <p>
+                All selected volunteers must arrive on the morning of <span class="reporting-highlight-date">Friday, 25th December 2026</span> at the conference venue for accreditation, orientation briefing, and badging.
+              </p>
+            </div>
+          </div>
+
+          <!-- Quick Summary Review Box -->
+          <div class="review-summary-card">
+            <div class="review-summary-title">
+              <span>Registration Preview Summary</span>
+              <span class="quota-indicator-pill available">Ready for Submission</span>
+            </div>
+            <div class="review-grid">
+              <div class="review-item">
+                <span class="review-item-label">Volunteer Name</span>
+                <span class="review-item-val" id="revName">—</span>
+              </div>
+              <div class="review-item">
+                <span class="review-item-label">AP District</span>
+                <span class="review-item-val" id="revDistrict">—</span>
+              </div>
+              <div class="review-item">
+                <span class="review-item-label">Mandal / Town</span>
+                <span class="review-item-val" id="revMandal">—</span>
+              </div>
+              <div class="review-item">
+                <span class="review-item-label">District President</span>
+                <span class="review-item-val" id="revPresident">—</span>
+              </div>
+              <div class="review-item">
+                <span class="review-item-label">WhatsApp Contact</span>
+                <span class="review-item-val" id="revWhatsapp">—</span>
+              </div>
+              <div class="review-item">
+                <span class="review-item-label">Aadhaar (Masked)</span>
+                <span class="review-item-val" id="revAadhaar">—</span>
+              </div>
+              <div class="review-item">
+                <span class="review-item-label">Availability & Shift</span>
+                <span class="review-item-val" id="revShift">—</span>
+              </div>
+              <div class="review-item">
+                <span class="review-item-label">Photo Uploaded</span>
+                <span class="review-item-val" id="revPhotoStatus">Yes (Attached)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mandatory Agreement Checkbox -->
+          <div class="agreement-card" id="groupAgreement">
+            <label class="agreement-checkbox-wrapper">
+              <input type="checkbox" id="agreementAccepted" name="agreementAccepted" required />
+              <div class="agreement-text">
+                <strong>Mandatory Volunteer Declaration:</strong> I confirm that the details provided are accurate, I will report on the morning of <strong>Friday, 25th December 2026</strong>, and I agree to follow the conference schedule and committee guidelines.
+              </div>
+            </label>
+            <span class="field-error" id="errorAgreement">You must accept the volunteer declaration to register.</span>
+          </div>
+
+          <!-- Submission Error Message Banner -->
+          <div class="alert-box danger" id="submitErrorBanner" style="display: none; margin-top: 1rem;">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+            <div id="submitErrorMessage">Error submitting registration. Please try again.</div>
+          </div>
+
+        </div>
+
+        <!-- Card Footer Navigation Buttons -->
+        <div class="card-footer">
+          <button type="button" class="btn btn-secondary" id="btnPrev" style="visibility: hidden;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+
+          <button type="button" class="btn btn-primary" id="btnNext">
+            <span>Continue</span>
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          <button type="submit" class="btn btn-gold" id="btnSubmit" style="display: none;">
+            <span id="btnSubmitSpinner" class="spinner" style="display: none;"></span>
+            <svg id="btnSubmitIcon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="btnSubmitText">Confirm & Submit Registration</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- ================================================================
+         POST-SUBMISSION GREETING & DOWNLOADABLE REGISTRATION SLIP (WITH PHOTO)
+    ================================================================= -->
+    <div class="confirmation-screen" id="confirmationScreen">
+      
+      <!-- Warm Greeting Message -->
+      <div class="warm-greeting-card">
+        <div class="greeting-icon-badge">
+          <svg fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <h2 class="greeting-salutation">
+          JazakAllahu Khair, <span id="greetVolunteerName">Respected Volunteer</span>!
+        </h2>
+        <p class="greeting-message">
+          Thank you for registering to serve in the Khidmat brigade for the <strong>2-Day Rah e Rahmat Conference</strong>. Your district quota slot has been confirmed and officially recorded.
+        </p>
+        <div class="greeting-reporting-callout">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+          </svg>
+          <span>Reporting Schedule: <strong>Friday, 25th December 2026 – Morning</strong></span>
+        </div>
+      </div>
+
+      <!-- Downloadable Registration Form Card (with Photo) -->
+      <div class="slip-card-wrapper">
+        <div class="registration-slip" id="registrationSlipCard">
+          
+          <!-- Slip Header -->
+          <div class="slip-header">
+            <div class="slip-header-brand">
+              <img src="logo.png" alt="Subai Jamait Ahle Hadees Logo" class="slip-logo" />
+              <div class="slip-title">
+                <div class="slip-org-name">Subai Jamait Ahle Hadees Andhra Pradesh</div>
+                <h2>2-Day Grand Raah e Rahmat Conference</h2>
+                <p>Official Volunteer Registration Form &bull; 26th &amp; 27th December 2026</p>
+              </div>
+            </div>
+            <div class="slip-document-tag">Official Slip</div>
+          </div>
+
+          <!-- Slip Body -->
+          <div class="slip-body">
+            
+            <!-- Reference ID & Status -->
+            <div class="slip-id-banner">
+              <div>
+                <div class="slip-id-title">Volunteer Reference ID</div>
+                <div class="slip-id-val" id="slipVolunteerId">RR-KRI-001</div>
+              </div>
+              <div class="slip-status-badge">Registered & Verified</div>
+            </div>
+
+            <!-- Profile & Photo Section -->
+            <div class="slip-profile-section">
+              <!-- Photo Frame -->
+              <div class="slip-photo-frame">
+                <img id="slipPhotoImg" src="" alt="Volunteer Photo" />
+                <div class="slip-photo-tag">Photo ID</div>
+              </div>
+
+              <!-- Details Grid -->
+              <div class="slip-grid">
+                <div class="slip-cell">
+                  <span class="slip-cell-label">Full Name</span>
+                  <span class="slip-cell-val highlight" id="slipFullName">Shaik Abdul Rahim</span>
+                </div>
+                <div class="slip-cell">
+                  <span class="slip-cell-label">District & Code</span>
+                  <span class="slip-cell-val" id="slipDistrict">Krishna (KRI)</span>
+                </div>
+                <div class="slip-cell">
+                  <span class="slip-cell-label">Gender / Age</span>
+                  <span class="slip-cell-val" id="slipGenderAge">Male, 24 Years</span>
+                </div>
+                <div class="slip-cell">
+                  <span class="slip-cell-label">Mandal / Town</span>
+                  <span class="slip-cell-val" id="slipMandal">Vijayawada Urban</span>
+                </div>
+                <div class="slip-cell">
+                  <span class="slip-cell-label">WhatsApp Mobile</span>
+                  <span class="slip-cell-val" id="slipWhatsapp">+91 98765 43210</span>
+                </div>
+                <div class="slip-cell">
+                  <span class="slip-cell-label">District President</span>
+                  <span class="slip-cell-val" id="slipPresident">Janab Mohammed Ibrahim</span>
+                </div>
+                <div class="slip-cell">
+                  <span class="slip-cell-label">Emergency Contact</span>
+                  <span class="slip-cell-val" id="slipEmergency">+91 91234 56789 (Brother)</span>
+                </div>
+                <div class="slip-cell">
+                  <span class="slip-cell-label">Aadhaar (Masked)</span>
+                  <span class="slip-cell-val" id="slipAadhaar">XXXX-XXXX-1234</span>
+                </div>
+                <div class="slip-cell">
+                  <span class="slip-cell-label">Attendance Availability</span>
+                  <span class="slip-cell-val" id="slipAvailability">Both Days (Day 1 & Day 2)</span>
+                </div>
+                <div class="slip-cell">
+                  <span class="slip-cell-label">Preferred Shift</span>
+                  <span class="slip-cell-val" id="slipShift">Full Time</span>
+                </div>
+                <div class="slip-cell full-width">
+                  <span class="slip-cell-label">Languages Spoken</span>
+                  <span class="slip-cell-val" id="slipLanguages">Telugu, Urdu, English</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mandatory Reporting Callout Ribbon -->
+            <div class="slip-reporting-ribbon">
+              <svg fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+              </svg>
+              <div class="slip-reporting-text">
+                <strong>Reporting Commitment:</strong> Arrive on the morning of <strong>Friday, 25th December 2026</strong> at the central conference venue check-in desk with your original Government ID and this printed/digital registration slip.
+              </div>
+            </div>
+
+            <!-- Verification & Instructions Block (Full-Width Callout) -->
+            <div class="slip-verification-block">
+              <div class="slip-instructions">
+                <svg class="slip-callout-icon" width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+                <div class="slip-instructions-content">
+                  <strong>Instructions for Volunteers:</strong> Present this registration slip at the accreditation counter to receive your official conference volunteer badge, kit, and duty roster.
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Slip Footer -->
+          <div class="slip-footer">
+            <span>Security Status: <strong>VALIDATED</strong></span>
+            <span id="slipIssuedDate">Issued: Nov 2026</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="slip-actions-bar">
+        <button type="button" class="btn btn-primary" id="btnDownloadSlipPdf">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Download Registration Form (PDF)
+        </button>
+
+        <button type="button" class="btn btn-secondary" id="btnPrintSlip">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Print Form
+        </button>
+
+        <button type="button" class="btn btn-secondary" id="btnRegisterAnother">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Register Another Volunteer
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ================================================================
+       MODAL 1: LIVE 26 ANDHRA PRADESH DISTRICT QUOTAS (1,000 TOTAL FORCE)
+  ================================================================= -->
+  <div class="modal-overlay" id="districtModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>AP District Quotas (1,000 Total Force)</h3>
+        <button type="button" class="modal-close-btn" id="closeDistrictModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="district-search-bar">
+          <div class="input-container input-with-icon">
+            <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input type="text" id="districtSearchInput" class="form-input" placeholder="Search Andhra Pradesh districts..." />
+          </div>
+        </div>
+
+        <div class="district-quota-list" id="modalDistrictList">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Balanced 3-Column Footer -->
+  <footer class="footer-wrapper">
+    <div class="footer-container">
+      <div class="footer-grid">
+
+        <!-- Left Column: Organization Globe Logo -->
+        <div class="footer-col-left">
+          <img src="logo.png" alt="Subai Jamiat Ahle Hadees Andhra Pradesh Logo" class="footer-logo" />
+        </div>
+
+        <!-- Center Column: Arabic Calligraphy Wordmark & Conference Text -->
+        <div class="footer-col-center">
+          <img src="calligraphy-wordmark.png" alt="Subai Jamiat Ahle Hadees Arabic Calligraphy" class="footer-calligraphy" />
+          <h3 class="footer-org-name">SUBAI JAMIAT AHLE HADEES ANDHRA PRADESH</h3>
+          <h4 class="footer-event-title">2-Day Grand Raah e Rahmat Conference</h4>
+          <p class="footer-dates-line">
+            Conference Dates: <strong>26th &amp; 27th of December 2026</strong>
+          </p>
+          <p class="footer-venue-line">
+            Venue: <strong>Sitara Grounds, Vidhyadharapuram, Vijayawada</strong>
+          </p>
+          <p class="footer-reporting-line">
+            Volunteer Reporting: <strong>Friday, 25th December 2026 (Morning)</strong>
+          </p>
+        </div>
+
+        <!-- Right Column: Embedded Venue Map -->
+        <div class="footer-col-right">
+          <div class="footer-map-card">
+            <iframe src="https://www.google.com/maps/embed?pb=!3m2!1sen!2sin!4v1795432600656!5m2!1sen!2sin!6m8!1m7!1srdcCPNLEH3lEx8Qa6Cd0-Q!2m2!1d16.53470676691657!2d80.60384908129977!3f192.9164943288044!4f0.38847075460734004!5f0.7820865974627469" width="100%" height="135" style="border:0; display:block;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Copyright Row -->
+      <div class="footer-bottom-row">
+        <p class="footer-copyright">
+          &copy; 2026 Subai Jamait Ahle Hadees Andhra Pradesh. All rights reserved. | <a href="https://www.linkedin.com/in/abd-al-haseeb" target="_blank" rel="noopener noreferrer" class="designer-link">Designer - Abdul Haseeb Al - Oomeri</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript File -->
+  <script src="app.js"></script>
+</body>
+</html>
