@@ -170,7 +170,7 @@
 
                   <!-- Upload Controls -->
                   <div class="photo-controls">
-                    <input type="file" id="applicantPhoto" name="applicantPhoto" class="file-input-hidden" accept="image/jpeg, image/png" />
+                    <input type="file" id="applicantPhoto" name="applicantPhoto" class="file-input-hidden" accept="image/*" />
                     <label for="applicantPhoto" class="custom-file-btn">
                       <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -179,8 +179,8 @@
                     </label>
 
                     <p class="photo-specs-text">
-                      Strictly <strong>JPG or PNG</strong> only. Maximum size: <strong>500 KB</strong>.<br>
-                      Must be a clear front-facing photo for your official volunteer registration slip.
+                      Take a camera selfie or choose from photo gallery.<br>
+                      Large photos are automatically compressed for your official slip.
                     </p>
 
                     <div class="photo-filename-tag" id="photoFilenameTag">
@@ -193,7 +193,7 @@
                   </div>
                 </div>
               </div>
-              <span class="field-error" id="errorPhoto">Please upload a clear JPG/PNG photo under 500 KB.</span>
+              <span class="field-error" id="errorPhoto">Please upload your photo (take a selfie or choose from gallery).</span>
             </div>
 
             <!-- Gender -->

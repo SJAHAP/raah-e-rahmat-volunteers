@@ -58,7 +58,8 @@
   var HOST_DISTRICT_QUOTA = 500;
   var STANDARD_DISTRICT_QUOTA = 20;
   var TOTAL_STATE_QUOTA = 1000;
-  var MAX_PHOTO_SIZE = 500 * 1024; // 500 KB limit
+  var MAX_PHOTO_SIZE = 500 * 1024; // 500 KB limit for final compressed photo
+  var MAX_RAW_PHOTO_SIZE = 25 * 1024 * 1024; // 25 MB limit for raw camera photos before compression
   var REPORTING_NOTICE_TEXT = "Friday, 25th December 2026 – Morning";
 
   /**
@@ -483,56 +484,133 @@
   }
 
   /**
-   * Handle Photo Selection, Validation & Base64 Data URL Conversion
+   * Handle Photo Selection, Client-Side Auto-Compression & Base64 Data URL Conversion
+   * - Allows raw camera photos up to 25 MB into compression step without early size rejection
+   * - Resizes proportionally so longest side is at most 600px (maxWidth = 600, maxHeight = 600)
+   * - Exports JPEG at 0.80 quality (or 0.65 if above 450 KB)
+   * - Always calls URL.revokeObjectURL to keep mobile browser memory clean
    */
   function handlePhotoSelection(e) {
     var file = e.target.files && e.target.files[0];
     if (!file) return;
 
-    var validTypes = ["image/jpeg", "image/png", "image/jpg"];
     var errorEl = document.getElementById("errorPhoto");
 
-    // 1. Validate File Type
-    if (!validTypes.includes(file.type.toLowerCase())) {
+    // 1. Basic image validation (accepts any image type, e.g. from camera or gallery)
+    var isImage = (file.type && file.type.toLowerCase().startsWith("image/")) || 
+                  /\.(jpe?g|png|webp|heic|heif|bmp|gif)$/i.test(file.name || "");
+    if (!isImage) {
       toggleFieldError("groupPhoto", "errorPhoto", true);
-      errorEl.textContent = "Invalid file type. Only JPG and PNG image files are allowed.";
+      errorEl.textContent = "Please select a valid image file or take a camera selfie.";
       resetPhotoUpload();
       return;
     }
 
-    // 2. Validate File Size (strictly max 500 KB)
-    if (file.size > MAX_PHOTO_SIZE) {
+    // 2. Allow raw camera photos up to 25 MB to enter the compression step
+    if (file.size > MAX_RAW_PHOTO_SIZE) {
       toggleFieldError("groupPhoto", "errorPhoto", true);
-      var sizeKb = Math.round(file.size / 1024);
-      errorEl.textContent = "File is too large (" + sizeKb + " KB). Maximum allowed size is 500 KB.";
+      var rawMb = Math.round(file.size / (1024 * 1024));
+      errorEl.textContent = "Raw photo is too large (" + rawMb + " MB). Maximum allowed size before compression is 25 MB.";
       resetPhotoUpload();
       return;
     }
 
-    // Clear any previous error
+    // Clear previous errors while compressing
     toggleFieldError("groupPhoto", "errorPhoto", false);
+    uploadBtnLabel.textContent = "Compressing Photo...";
 
-    // 3. Read as Data URL (Base64)
-    var reader = new FileReader();
-    reader.onload = function (event) {
-      photoBase64 = event.target.result;
+    // 3. Load into Image object via URL.createObjectURL
+    var objectUrl = URL.createObjectURL(file);
+    var img = new Image();
 
-      // Update UI Preview
-      photoPreviewImg.src = photoBase64;
-      photoPreviewImg.style.display = "block";
-      photoPlaceholder.style.display = "none";
+    img.onload = function () {
+      try {
+        // Proportional resize so longest side is at most 600px
+        var maxWidth = 600;
+        var maxHeight = 600;
+        var width = img.naturalWidth || img.width;
+        var height = img.naturalHeight || img.height;
 
-      photoFilenameText.textContent = file.name + " (" + Math.round(file.size / 1024) + " KB)";
-      photoFilenameTag.style.display = "inline-flex";
-      uploadBtnLabel.textContent = "Change Photo";
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        // Draw onto HTML5 canvas
+        var canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        var ctx = canvas.getContext("2d");
+
+        // White background to handle transparent PNGs cleanly when converted to JPEG
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Export compressed JPEG at 0.80 quality
+        var quality = 0.80;
+        var compressedBase64 = canvas.toDataURL("image/jpeg", quality);
+
+        // Estimate Base64 size in bytes: (chars - header) * 0.75
+        var headerIndex = compressedBase64.indexOf(",");
+        var base64Length = (headerIndex !== -1) ? (compressedBase64.length - (headerIndex + 1)) : compressedBase64.length;
+        var approxBytes = Math.round(base64Length * 0.75);
+
+        // If resulting Base64 string is still above 450 KB, step quality down to 0.65
+        if (approxBytes > 450 * 1024) {
+          quality = 0.65;
+          compressedBase64 = canvas.toDataURL("image/jpeg", quality);
+          headerIndex = compressedBase64.indexOf(",");
+          base64Length = (headerIndex !== -1) ? (compressedBase64.length - (headerIndex + 1)) : compressedBase64.length;
+          approxBytes = Math.round(base64Length * 0.75);
+        }
+
+        // Validate final compressed size (must be under 500 KB limit)
+        if (approxBytes > MAX_PHOTO_SIZE) {
+          toggleFieldError("groupPhoto", "errorPhoto", true);
+          errorEl.textContent = "Compressed photo is slightly above 500 KB. Please choose a clearer selfie.";
+          resetPhotoUpload();
+          return;
+        }
+
+        // Store compressed Base64 string for preview and submission
+        photoBase64 = compressedBase64;
+
+        // Update UI Preview
+        photoPreviewImg.src = photoBase64;
+        photoPreviewImg.style.display = "block";
+        photoPlaceholder.style.display = "none";
+
+        var compressedKb = Math.round(approxBytes / 1024);
+        photoFilenameText.textContent = (file.name || "photo.jpg") + " (" + compressedKb + " KB)";
+        photoFilenameTag.style.display = "inline-flex";
+        uploadBtnLabel.textContent = "Change Photo";
+
+        toggleFieldError("groupPhoto", "errorPhoto", false);
+      } catch (procErr) {
+        console.error("Photo compression error:", procErr);
+        toggleFieldError("groupPhoto", "errorPhoto", true);
+        errorEl.textContent = "Could not process image. Please try another photo.";
+        resetPhotoUpload();
+      } finally {
+        // Always revoke object URL to keep mobile browser memory clean
+        URL.revokeObjectURL(objectUrl);
+      }
     };
 
-    reader.onerror = function () {
+    img.onerror = function () {
+      URL.revokeObjectURL(objectUrl);
       toggleFieldError("groupPhoto", "errorPhoto", true);
-      errorEl.textContent = "Failed to read image file. Please try another photo.";
+      errorEl.textContent = "Unable to read image file. Please ensure it is a valid photo.";
+      resetPhotoUpload();
     };
 
-    reader.readAsDataURL(file);
+    img.src = objectUrl;
   }
 
   function resetPhotoUpload() {
@@ -561,7 +639,7 @@
       isValid = !!photoBase64;
       toggleFieldError("groupPhoto", "errorPhoto", !isValid);
       if (!isValid) {
-        document.getElementById("errorPhoto").textContent = "Please upload your applicant photo (JPG/PNG under 500 KB).";
+        document.getElementById("errorPhoto").textContent = "Please upload your applicant photo (take a selfie or upload from gallery).";
       }
     }
 
