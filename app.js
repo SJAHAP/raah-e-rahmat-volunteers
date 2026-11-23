@@ -27,30 +27,30 @@
   // NTR renamed to Vijayawada City (code VJA, Host District, quota: 500)
   // Others placed strictly at the bottom (code OTH, quota: 210)
   var AP_DISTRICTS = [
-    { name: "Ananthapuramu", code: "ATP" },
-    { name: "Annamayya", code: "ANN" },
-    { name: "Bapatla", code: "BPT" },
-    { name: "Chittoor", code: "CTR" },
-    { name: "Dr. B.R. Ambedkar Konaseema", code: "KNS" },
-    { name: "East Godavari", code: "EGD" },
-    { name: "Eluru", code: "ELR" },
-    { name: "Guntur", code: "GNT" },
-    { name: "Kakinada", code: "KKD" },
-    { name: "Krishna", code: "KRI" },
-    { name: "Kurnool", code: "KRN" },
-    { name: "Nandyal", code: "NDL" },
-    { name: "Palnadu", code: "PLN" },
-    { name: "Prakasam", code: "PKM" },
-    { name: "Sri Potti Sriramulu Nellore", code: "NLR" },
-    { name: "Sri Sathya Sai", code: "SSS" },
-    { name: "Srikakulam", code: "SKL" },
-    { name: "Tirupati", code: "TPT" },
-    { name: "Vijayawada City", code: "VJA" },
-    { name: "Visakhapatnam", code: "VSP" },
-    { name: "Vizianagaram", code: "VZM" },
-    { name: "West Godavari", code: "WGD" },
-    { name: "YSR Kadapa", code: "YSR" },
-    { name: "Others", code: "OTH" }
+    { name: "Ananthapuramu", code: "ATP", cap: 20 },
+    { name: "Annamayya", code: "ANN", cap: 20 },
+    { name: "Bapatla", code: "BPT", cap: 20 },
+    { name: "Chittoor", code: "CTR", cap: 20 },
+    { name: "Dr. B.R. Ambedkar Konaseema", code: "KNS", cap: 20 },
+    { name: "East Godavari", code: "EGD", cap: 50 },
+    { name: "Eluru", code: "ELR", cap: 50 },
+    { name: "Guntur", code: "GNT", cap: 20 },
+    { name: "Kakinada", code: "KKD", cap: 20 },
+    { name: "Krishna", code: "KRI", cap: 50 },
+    { name: "Kurnool", code: "KRN", cap: 50 },
+    { name: "Nandyal", code: "NDL", cap: 20 },
+    { name: "Palnadu", code: "PLN", cap: 20 },
+    { name: "Prakasam", code: "PKM", cap: 20 },
+    { name: "Sri Potti Sriramulu Nellore", code: "NLR", cap: 20 },
+    { name: "Sri Sathya Sai", code: "SSS", cap: 20 },
+    { name: "Srikakulam", code: "SKL", cap: 20 },
+    { name: "Tirupati", code: "TPT", cap: 20 },
+    { name: "Vijayawada City", code: "VJA", cap: 500 },
+    { name: "Visakhapatnam", code: "VSP", cap: 20 },
+    { name: "Vizianagaram", code: "VZM", cap: 20 },
+    { name: "West Godavari", code: "WGD", cap: 50 },
+    { name: "YSR Kadapa", code: "YSR", cap: 20 },
+    { name: "Others", code: "OTH", cap: 210 }
   ];
 
   // Quota configuration: 1,300 total volunteers
@@ -188,7 +188,7 @@
    */
   function initQuotasState() {
     AP_DISTRICTS.forEach(function (d) {
-      var quotaCap = getDistrictQuota(d.name);
+      var quotaCap = d.cap || getDistrictQuota(d.name);
       var host = isHostDistrict(d.name);
       liveQuotas[d.name] = {
         code: d.code,
@@ -266,7 +266,7 @@
     districtSelect.innerHTML = '<option value="" disabled ' + (previousSelection ? '' : 'selected') + '>Select District</option>';
 
     AP_DISTRICTS.forEach(function (d) {
-      var quotaCap = getDistrictQuota(d.name);
+      var quotaCap = d.cap || getDistrictQuota(d.name);
       var q = liveQuotas[d.name] || { cap: quotaCap, available: quotaCap, isFull: false };
       var cap = q.cap || quotaCap;
       var isHost = isHostDistrict(d.name);
@@ -339,7 +339,7 @@
       }
       matchCount++;
 
-      var quotaCap = getDistrictQuota(d.name);
+      var quotaCap = d.cap || getDistrictQuota(d.name);
       var q = liveQuotas[d.name] || { cap: quotaCap, available: quotaCap, registered: 0, isFull: false };
       var cap = q.cap || quotaCap;
       var isHost = isHostDistrict(d.name);
