@@ -22,10 +22,11 @@
   // Replace the placeholder below with your deployed Web App exec URL
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTE6e9sIHxqg6KGqHZgWgIdfxotnniLc6XoYr-x7jYZ7oEQHb_E-eTtorZLYW2RyX03w/exec";
 
-  // Master list of all 26 Andhra Pradesh districts in alphabetical order
+  // Master list of 23 Andhra Pradesh districts + Others (Total 24 entries)
+  // Alluri Sitharama Raju, Anakapalli, and Parvathipuram Manyam removed as requested
+  // NTR renamed to Vijayawada City (code VJA, Host District, quota: 500)
+  // Others placed strictly at the bottom (code OTH, quota: 210)
   var AP_DISTRICTS = [
-    { name: "Alluri Sitharama Raju", code: "ASR" },
-    { name: "Anakapalli", code: "ANK" },
     { name: "Ananthapuramu", code: "ATP" },
     { name: "Annamayya", code: "ANN" },
     { name: "Bapatla", code: "BPT" },
@@ -38,38 +39,60 @@
     { name: "Krishna", code: "KRI" },
     { name: "Kurnool", code: "KRN" },
     { name: "Nandyal", code: "NDL" },
-    { name: "NTR", code: "NTR" },
     { name: "Palnadu", code: "PLN" },
-    { name: "Parvathipuram Manyam", code: "PVM" },
     { name: "Prakasam", code: "PKM" },
     { name: "Sri Potti Sriramulu Nellore", code: "NLR" },
     { name: "Sri Sathya Sai", code: "SSS" },
     { name: "Srikakulam", code: "SKL" },
     { name: "Tirupati", code: "TPT" },
+    { name: "Vijayawada City", code: "VJA" },
     { name: "Visakhapatnam", code: "VSP" },
     { name: "Vizianagaram", code: "VZM" },
     { name: "West Godavari", code: "WGD" },
-    { name: "YSR Kadapa", code: "YSR" }
+    { name: "YSR Kadapa", code: "YSR" },
+    { name: "Others", code: "OTH" }
   ];
 
-  // Quota configuration: 1,000 total volunteers
-  // Host District NTR: 500 volunteers | Other 25 AP Districts: 20 volunteers each
-  var HOST_DISTRICT = "NTR";
+  // Quota configuration: 1,300 total volunteers
+  // Vijayawada City: 500 | 5 Boosted Districts: 50 each (250) | 17 Districts: 20 each (340) | Others: 210
+  var HOST_DISTRICT = "Vijayawada City";
   var HOST_DISTRICT_QUOTA = 500;
+  var BOOSTED_DISTRICT_QUOTA = 50;
   var STANDARD_DISTRICT_QUOTA = 20;
-  var TOTAL_STATE_QUOTA = 1000;
+  var OTHERS_QUOTA = 210;
+  var TOTAL_STATE_QUOTA = 1300;
   var REPORTING_NOTICE_TEXT = "Friday, 25th December 2026 – Morning";
 
   /**
-   * District Quota Helper:
-   * Host District NTR: 500 volunteers
-   * All other 25 Andhra Pradesh districts: 20 volunteers each
-   * Total Statewide Force: 1,000 volunteers
+   * Helper to check if a district is the Host District (Vijayawada City / NTR)
+   */
+  function isHostDistrict(district) {
+    if (!district) return false;
+    var norm = district.toString().trim().toUpperCase();
+    return norm === "VIJAYAWADA CITY" || norm === "VIJAYAWADA" || norm === "VJA" || norm === "NTR" || norm.indexOf("VIJAYAWADA") !== -1 || norm.indexOf("NTR") !== -1;
+  }
+
+  /**
+   * District Quota Helper (1,300 Total Volunteer Slots):
+   * - Vijayawada City (Host): 500
+   * - 5 Boosted Districts (Krishna, Eluru, West Godavari, East Godavari, Kurnool): 50 each
+   * - 17 Standard AP Districts: 20 each
+   * - Others (at bottom of dropdown): 210
    */
   function getDistrictQuota(district) {
     if (!district) return STANDARD_DISTRICT_QUOTA;
-    var normalized = district.toString().trim().toUpperCase();
-    return (normalized === "NTR" || normalized.indexOf("NTR") !== -1) ? HOST_DISTRICT_QUOTA : STANDARD_DISTRICT_QUOTA;
+    var norm = district.toString().trim().toUpperCase();
+    if (isHostDistrict(norm)) {
+      return HOST_DISTRICT_QUOTA; // 500
+    }
+    if (norm === "KRISHNA" || norm === "ELURU" || norm === "WEST GODAVARI" || norm === "EAST GODAVARI" || norm === "KURNOOL" ||
+        norm === "KRI" || norm === "ELR" || norm === "WGD" || norm === "EGD" || norm === "KRN") {
+      return BOOSTED_DISTRICT_QUOTA; // 50
+    }
+    if (norm === "OTHERS" || norm === "OTHER" || norm === "OTH") {
+      return OTHERS_QUOTA; // 210
+    }
+    return STANDARD_DISTRICT_QUOTA; // 20
   }
 
   // State
@@ -161,16 +184,17 @@
   }
 
   /**
-   * Setup initial mock state for all 26 districts (1,000 Volunteers: 500 NTR, 20 Others)
+   * Setup initial mock state for 23 AP districts + Others (1,300 Volunteers Total)
    */
   function initQuotasState() {
     AP_DISTRICTS.forEach(function (d, index) {
       var quotaCap = getDistrictQuota(d.name);
-      var sampleRegistered = (index === 9) ? 20 : (d.name === "NTR" ? 18 : (index % 5));
+      var host = isHostDistrict(d.name);
+      var sampleRegistered = (index === 9) ? 20 : (host ? 18 : (index % 5));
       liveQuotas[d.name] = {
         code: d.code,
         cap: quotaCap,
-        isHost: (d.name === "NTR"),
+        isHost: host,
         registered: sampleRegistered,
         available: Math.max(0, quotaCap - sampleRegistered),
         isFull: sampleRegistered >= quotaCap
@@ -227,7 +251,8 @@
   }
 
   /**
-   * Populate District Dropdown with Live Available Spots (500 for NTR, 20 for others)
+   * Populate District Dropdown with Live Available Spots (1,300 Total Slots)
+   * 500 for Vijayawada City, 50 for 5 Boosted, 20 for 17 Standard, 210 for Others
    */
   function populateDistrictDropdown() {
     var previousSelection = districtSelect.value;
@@ -237,7 +262,7 @@
       var quotaCap = getDistrictQuota(d.name);
       var q = liveQuotas[d.name] || { cap: quotaCap, available: quotaCap, isFull: false };
       var cap = q.cap || quotaCap;
-      var isHost = (d.name === "NTR");
+      var isHost = isHostDistrict(d.name);
       var hostTag = isHost ? " [Host District]" : "";
 
       var option = document.createElement("option");
@@ -271,7 +296,7 @@
 
     var q = liveQuotas[selectedName];
     var cap = q.cap || getDistrictQuota(selectedName);
-    var isHost = (selectedName === "NTR");
+    var isHost = isHostDistrict(selectedName);
 
     districtStatusCard.style.display = "flex";
     selectedDistCode.textContent = q.code;
@@ -279,7 +304,7 @@
     selectedDistQuotaText.textContent = q.available + " of " + cap + " spots available (" + q.registered + " registered)";
 
     selectedDistBadge.className = "quota-indicator-pill";
-    var fastThreshold = isHost ? 25 : 5;
+    var fastThreshold = isHost ? 25 : (cap >= 50 ? 10 : 5);
     if (q.available <= 0 || q.isFull) {
       selectedDistBadge.classList.add("full");
       selectedDistBadge.textContent = "Quota Full";
@@ -310,12 +335,12 @@
       var quotaCap = getDistrictQuota(d.name);
       var q = liveQuotas[d.name] || { cap: quotaCap, available: quotaCap, registered: 0, isFull: false };
       var cap = q.cap || quotaCap;
-      var isHost = (d.name === "NTR");
+      var isHost = isHostDistrict(d.name);
 
       var card = document.createElement("div");
       card.className = "district-row-card" + (isHost ? " host-district-card" : "");
 
-      var fastThreshold = isHost ? 25 : 5;
+      var fastThreshold = isHost ? 25 : (cap >= 50 ? 10 : 5);
       var badgeClass = q.isFull ? "full" : (q.available <= fastThreshold ? "filling-fast" : "available");
       var badgeText = q.isFull ? ("FULL (0/" + cap + ")") : (q.available + "/" + cap + " left");
       var hostBadgeHtml = isHost ? ' <span class="host-pill-badge">Host District</span>' : '';
@@ -1239,8 +1264,13 @@
   }
 
   function getDistrictCode(districtName) {
+    if (!districtName) return "GEN";
+    var trimmed = districtName.toString().trim().toLowerCase();
+    if (trimmed === "ntr" || trimmed === "vijayawada" || trimmed === "vijayawada city") {
+      return "VJA";
+    }
     for (var i = 0; i < AP_DISTRICTS.length; i++) {
-      if (AP_DISTRICTS[i].name.toLowerCase() === (districtName || "").toLowerCase()) {
+      if (AP_DISTRICTS[i].name.toLowerCase() === trimmed) {
         return AP_DISTRICTS[i].code;
       }
     }
